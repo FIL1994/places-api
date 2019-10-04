@@ -10,6 +10,7 @@ import { Recipe } from "./entities/recipe";
 import { Rate } from "./entities/rate";
 import { User } from "./entities/user";
 import { seedDatabase } from "./helpers";
+import { Place } from "./entities/place";
 
 export interface Context {
   user: User;
@@ -28,7 +29,7 @@ async function bootstrap() {
       password: "pass123",
       port: 5432,
       host: "localhost",
-      entities: [Recipe, Rate, User],
+      entities: [Recipe, Rate, User, Place],
       synchronize: true,
       logger: "advanced-console",
       logging: "all",
