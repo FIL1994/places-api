@@ -1,13 +1,13 @@
 {
-  "name": "type-graphql-app",
-  "version": "1.0.0",
-  "description": "",
+  "name": "places-api",
+  "version": "0.1.0",
+  "description": "a graphql server",
   "main": "index.js",
   "scripts": {
     "start": "ts-node index.ts"
   },
   "keywords": [],
-  "author": "",
+  "author": "Philip Van Raalte",
   "license": "ISC",
   "dependencies": {
     "@types/graphql": "^14.5.0",
