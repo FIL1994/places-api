@@ -10,6 +10,8 @@ import { Recipe } from "./entities/recipe";
 import { Rate } from "./entities/rate";
 import { User } from "./entities/user";
 import { seedDatabase } from "./helpers";
+import { Place } from "./entities/place";
+import { PlaceResolver } from "./resolvers/place-resolver";
 
 export interface Context {
   user: User;
@@ -28,11 +30,11 @@ async function bootstrap() {
       password: "pass123",
       port: 5432,
       host: "localhost",
-      entities: [Recipe, Rate, User],
-      synchronize: true,
+      entities: [Recipe, Rate, User, Place],
+      synchronize: process.env.NODE_ENV === "production" ? false : true,
       logger: "advanced-console",
       logging: "all",
-      dropSchema: true,
+      dropSchema: false,
       cache: true
     });
 
@@ -41,7 +43,7 @@ async function bootstrap() {
 
     // build TypeGraphQL executable schema
     const schema = await TypeGraphQL.buildSchema({
-      resolvers: [RecipeResolver, RateResolver],
+      resolvers: [RecipeResolver, RateResolver, PlaceResolver],
       container: Container
     });
 
