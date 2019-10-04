@@ -12,11 +12,14 @@
   "dependencies": {
     "@types/graphql": "^14.5.0",
     "apollo-server": "^2.9.4",
-    "class-validator": "^0.10.1",
     "graphql": "^14.5.8",
+    "pg": "^7.12.1",
     "reflect-metadata": "^0.1.13",
     "ts-node": "^8.4.1",
     "type-graphql": "^0.17.5",
+    "typedi": "^0.8.0",
+    "typeorm": "^0.2.19",
+    "typeorm-typedi-extensions": "^0.2.3",
     "typescript": "^3.6.3"
   }
 }

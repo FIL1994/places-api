@@ -1,23 +1,62 @@
 import "reflect-metadata";
 import { ApolloServer } from "apollo-server";
-import * as path from "path";
-import { buildSchema } from "type-graphql";
+import { Container } from "typedi";
+import * as TypeORM from "typeorm";
+import * as TypeGraphQL from "type-graphql";
 
-import RecipeResolver from "./recipe.resolver";
+import { RecipeResolver } from "./resolvers/recipe-resolver";
+import { RateResolver } from "./resolvers/rate-resolver";
+import { Recipe } from "./entities/recipe";
+import { Rate } from "./entities/rate";
+import { User } from "./entities/user";
+import { seedDatabase } from "./helpers";
 
-async function bootstrap() {
-  const schema = await buildSchema({
-    resolvers: [RecipeResolver],
-    emitSchemaFile: path.resolve(__dirname, "schema.gql"),
-  });
-
-  const server = new ApolloServer({
-    schema,
-    playground: true,
-  });
-
-  const { url } = await server.listen(4000);
-  console.log(`Server is running, GraphQL Playground available at ${url}`);
+export interface Context {
+  user: User;
 }
 
-bootstrap().catch(console.error);
+// register 3rd party IOC container
+TypeORM.useContainer(Container);
+
+async function bootstrap() {
+  try {
+    // create TypeORM connection
+    await TypeORM.createConnection({
+      type: "postgres",
+      database: "type_graph",
+      username: "root",
+      password: "pass123",
+      port: 5432,
+      host: "localhost",
+      entities: [Recipe, Rate, User],
+      synchronize: true,
+      logger: "advanced-console",
+      logging: "all",
+      dropSchema: true,
+      cache: true
+    });
+
+    // seed database with some data
+    const { defaultUser } = await seedDatabase();
+
+    // build TypeGraphQL executable schema
+    const schema = await TypeGraphQL.buildSchema({
+      resolvers: [RecipeResolver, RateResolver],
+      container: Container
+    });
+
+    // create mocked context
+    const context: Context = { user: defaultUser };
+
+    // Create GraphQL server
+    const server = new ApolloServer({ schema, context });
+
+    // Start the server
+    const { url } = await server.listen(4000);
+    console.log(`Server is running, GraphQL Playground available at ${url}`);
+  } catch (err) {
+    console.error(err);
+  }
+}
+
+bootstrap();
