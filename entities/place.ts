@@ -24,7 +24,8 @@ export class Place {
     nullable: true
   })
   @Column("simple-array", {
-    nullable: true
+    nullable: true,
+    default: []
   })
   imageUrls?: string[];
 }
