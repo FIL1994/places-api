@@ -9,6 +9,12 @@ export class PlaceInput implements Partial<Place> {
   @Field()
   address: string;
 
+  @Field()
+  lat: number;
+
+  @Field()
+  lng: number;
+
   @Field({ nullable: true })
   description?: string;
 

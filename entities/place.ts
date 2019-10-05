@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
 import { ObjectType, Field, ID } from "type-graphql";
 
 @Entity()
@@ -15,6 +15,18 @@ export class Place {
   @Field()
   @Column()
   address: string;
+
+  @Field()
+  @Column({
+    type: "float"
+  })
+  lat: number;
+
+  @Field()
+  @Column({
+    type: "float"
+  })
+  lng: number;
 
   @Field({ nullable: true })
   @Column({ nullable: true })
