@@ -28,4 +28,18 @@ export class PlaceResolver {
     });
     return await this.placeRepository.save(place);
   }
+
+  @Mutation(returns => Place) async updatePlace(
+    @Arg("placeId", type => Int) placeId: number,
+    @Arg("placeInput") placeInput: PlaceInput
+  ) {
+    return await this.placeRepository.update(placeId, placeInput);
+  }
+
+  @Mutation(returns => Place) async deletePlace(
+    @Arg("placeId", type => Int) placeId: number
+  ) {
+    const place = await this.placeRepository.findOne(placeId);
+    return await this.placeRepository.remove(place);
+  }
 }
