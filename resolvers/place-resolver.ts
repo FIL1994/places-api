@@ -1,4 +1,4 @@
-import { Resolver, Query, Arg, Int, Mutation } from "type-graphql";
+import { Resolver, Query, Arg, Int, Mutation, ID } from "type-graphql";
 import { Place } from "../entities/place";
 import { InjectRepository } from "typeorm-typedi-extensions";
 import { Repository } from "typeorm";
@@ -36,10 +36,11 @@ export class PlaceResolver {
     return await this.placeRepository.update(placeId, placeInput);
   }
 
-  @Mutation(returns => Place) async deletePlace(
-    @Arg("placeId", type => Int) placeId: number
+  @Mutation(returns => Boolean) async deletePlace(
+    @Arg("placeId", type => ID) placeId: number
   ) {
     const place = await this.placeRepository.findOne(placeId);
-    return await this.placeRepository.remove(place);
+    await this.placeRepository.remove(place);
+    return true;
   }
 }
