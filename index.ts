@@ -10,13 +10,13 @@ import { RateResolver } from "./resolvers/rate-resolver";
 import { Recipe } from "./entities/recipe";
 import { Rate } from "./entities/rate";
 import { User } from "./entities/user";
-import { seedDatabase } from "./helpers";
 import { Place } from "./entities/place";
 import { PlaceResolver } from "./resolvers/place-resolver";
 import { UserResolver } from "./resolvers/user-resolver";
+import { getUser } from "./utils/get-user";
 
 export interface Context {
-  user: User;
+  user: Partial<User>;
 }
 
 // register 3rd party IOC container
@@ -40,9 +40,6 @@ async function bootstrap() {
       cache: true
     });
 
-    // seed database with some data
-    const { defaultUser } = await seedDatabase();
-
     // build TypeGraphQL executable schema
     const schema = await TypeGraphQL.buildSchema({
       resolvers: [RecipeResolver, RateResolver, PlaceResolver, UserResolver],
@@ -54,10 +51,10 @@ async function bootstrap() {
       schema,
       context: ({ req }): Context => {
         const token = req.headers.authorization || "";
-        // const user = getUser(token);
-        // if(!user) return null;
+        const user = getUser(token);
+        if (!user) return null;
 
-        return { user: defaultUser };
+        return { user };
       }
     });
 
