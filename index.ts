@@ -12,6 +12,7 @@ import { User } from "./entities/user";
 import { seedDatabase } from "./helpers";
 import { Place } from "./entities/place";
 import { PlaceResolver } from "./resolvers/place-resolver";
+import { UserResolver } from "./resolvers/user-resolver";
 
 export interface Context {
   user: User;
@@ -43,15 +44,21 @@ async function bootstrap() {
 
     // build TypeGraphQL executable schema
     const schema = await TypeGraphQL.buildSchema({
-      resolvers: [RecipeResolver, RateResolver, PlaceResolver],
+      resolvers: [RecipeResolver, RateResolver, PlaceResolver, UserResolver],
       container: Container
     });
 
-    // create mocked context
-    const context: Context = { user: defaultUser };
-
     // Create GraphQL server
-    const server = new ApolloServer({ schema, context });
+    const server = new ApolloServer({
+      schema,
+      context: ({ req }): Context => {
+        const token = req.headers.authorization || "";
+        // const user = getUser(token);
+        // if(!user) return null;
+
+        return { user: defaultUser };
+      }
+    });
 
     // Start the server
     const { url } = await server.listen(4000);

@@ -1,7 +1,8 @@
 import { Resolver, Query, Arg, Int, Mutation, ID } from "type-graphql";
-import { Place } from "../entities/place";
 import { InjectRepository } from "typeorm-typedi-extensions";
 import { Repository } from "typeorm";
+import { Place } from "../entities/place";
+
 import { PlaceInput } from "./types/place-input";
 
 @Resolver(of => Place)
