@@ -1,3 +1,4 @@
+require("dotenv").config();
 import "reflect-metadata";
 import { ApolloServer } from "apollo-server";
 import { Container } from "typedi";
@@ -9,12 +10,13 @@ import { RateResolver } from "./resolvers/rate-resolver";
 import { Recipe } from "./entities/recipe";
 import { Rate } from "./entities/rate";
 import { User } from "./entities/user";
-import { seedDatabase } from "./helpers";
 import { Place } from "./entities/place";
 import { PlaceResolver } from "./resolvers/place-resolver";
+import { UserResolver } from "./resolvers/user-resolver";
+import { getUser } from "./utils/get-user";
 
 export interface Context {
-  user: User;
+  user: Partial<User>;
 }
 
 // register 3rd party IOC container
@@ -38,20 +40,23 @@ async function bootstrap() {
       cache: true
     });
 
-    // seed database with some data
-    const { defaultUser } = await seedDatabase();
-
     // build TypeGraphQL executable schema
     const schema = await TypeGraphQL.buildSchema({
-      resolvers: [RecipeResolver, RateResolver, PlaceResolver],
+      resolvers: [RecipeResolver, RateResolver, PlaceResolver, UserResolver],
       container: Container
     });
 
-    // create mocked context
-    const context: Context = { user: defaultUser };
-
     // Create GraphQL server
-    const server = new ApolloServer({ schema, context });
+    const server = new ApolloServer({
+      schema,
+      context: ({ req }): Context => {
+        const token = req.headers.authorization || "";
+        const user = getUser(token);
+        if (!user) return null;
+
+        return { user };
+      }
+    });
 
     // Start the server
     const { url } = await server.listen(4000);
