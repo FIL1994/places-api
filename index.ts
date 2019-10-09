@@ -1,3 +1,4 @@
+require("dotenv").config();
 import "reflect-metadata";
 import { ApolloServer } from "apollo-server";
 import { Container } from "typedi";
