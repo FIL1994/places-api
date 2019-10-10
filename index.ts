@@ -5,6 +5,7 @@ import { Container } from "typedi";
 import * as TypeORM from "typeorm";
 import * as TypeGraphQL from "type-graphql";
 
+import { authChecker } from "./authorization/auth-checker";
 import { RecipeResolver } from "./resolvers/recipe-resolver";
 import { RateResolver } from "./resolvers/rate-resolver";
 import { Recipe } from "./entities/recipe";
@@ -43,7 +44,8 @@ async function bootstrap() {
     // build TypeGraphQL executable schema
     const schema = await TypeGraphQL.buildSchema({
       resolvers: [RecipeResolver, RateResolver, PlaceResolver, UserResolver],
-      container: Container
+      container: Container,
+      authChecker
     });
 
     // Create GraphQL server
