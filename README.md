@@ -1,4 +1,4 @@
-# type-graphql-app
+# places-api
 
 generate jwt secret
 
