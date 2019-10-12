@@ -9,7 +9,9 @@ export class User {
   readonly id: number;
 
   @Field()
-  @Column()
+  @Column({
+    unique: true
+  })
   email: string;
 
   @Field({ nullable: true })
