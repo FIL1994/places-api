@@ -6,3 +6,18 @@ services:
       - ./db/db.env
     ports:
       - 5432:5432
+    networks:
+      - postgres
+  pg_admin:
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-pgadmin4@pgadmin.org}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-admin}
+      SERVER_PORT: 5050
+    ports:
+      - "${PGADMIN_PORT:-5050}:5050"
+    networks:
+      - postgres
+networks:
+  postgres:
+    driver: bridge
