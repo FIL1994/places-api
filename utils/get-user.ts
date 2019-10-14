@@ -5,7 +5,7 @@ import { User } from "../entities/user";
 export function getUser(token: string) {
   try {
     const user: Partial<User> = jwt.verify(
-      token,
+      token.replace("Bearer ", ""),
       process.env.JWT_SECRET
     ) as any;
     return user;

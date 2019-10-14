@@ -15,6 +15,8 @@ import { Place } from "./entities/place";
 import { PlaceResolver } from "./resolvers/place-resolver";
 import { UserResolver } from "./resolvers/user-resolver";
 import { getUser } from "./utils/get-user";
+import { PlaceList } from "./entities/place-list";
+import { PlaceListResolver } from "./resolvers/place-list-resolver";
 
 export interface Context {
   user: Partial<User>;
@@ -33,7 +35,7 @@ async function bootstrap() {
       password: "pass123",
       port: 5432,
       host: "localhost",
-      entities: [Recipe, Rate, User, Place],
+      entities: [Recipe, Rate, User, Place, PlaceList],
       synchronize: process.env.NODE_ENV === "production" ? false : true,
       logger: "advanced-console",
       logging: "all",
@@ -43,7 +45,13 @@ async function bootstrap() {
 
     // build TypeGraphQL executable schema
     const schema = await TypeGraphQL.buildSchema({
-      resolvers: [RecipeResolver, RateResolver, PlaceResolver, UserResolver],
+      resolvers: [
+        RecipeResolver,
+        RateResolver,
+        PlaceResolver,
+        UserResolver,
+        PlaceListResolver
+      ],
       container: Container,
       authChecker
     });

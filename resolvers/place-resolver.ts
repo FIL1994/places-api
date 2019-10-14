@@ -4,11 +4,15 @@ import { Repository } from "typeorm";
 import { Place } from "../entities/place";
 
 import { PlaceInput } from "./types/place-input";
+import { PlaceList } from "../entities/place-list";
 
 @Resolver(of => Place)
 export class PlaceResolver {
   constructor(
-    @InjectRepository(Place) private readonly placeRepository: Repository<Place>
+    @InjectRepository(Place)
+    private readonly placeRepository: Repository<Place>,
+    @InjectRepository(Place)
+    private readonly placeListRepository: Repository<PlaceList>
   ) {}
 
   @Query(returns => Place, { nullable: true })
@@ -24,8 +28,13 @@ export class PlaceResolver {
   @Mutation(returns => Place) async addPlace(
     @Arg("place") placeInput: PlaceInput
   ) {
+    const placeList = await this.placeListRepository.findOneOrFail(
+      placeInput.placeListId
+    );
+
     const place = this.placeRepository.create({
-      ...placeInput
+      ...placeInput,
+      placeList
     });
     return await this.placeRepository.save(place);
   }
