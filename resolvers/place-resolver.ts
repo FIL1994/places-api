@@ -21,8 +21,8 @@ export class PlaceResolver {
   }
 
   @Query(returns => [Place])
-  places(): Promise<Place[]> {
-    return this.placeRepository.find();
+  async places(): Promise<Place[]> {
+    return await this.placeRepository.find();
   }
 
   @Mutation(returns => Place) async addPlace(

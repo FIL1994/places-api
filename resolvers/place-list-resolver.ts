@@ -27,6 +27,13 @@ export class PlaceListResolver {
     return this.placeListRepository.findOne(placeListId);
   }
 
+  @Query(returns => [PlaceList], { nullable: true })
+  async placeLists() {
+    return await this.placeListRepository.find({
+      loadRelationIds: true
+    });
+  }
+
   @Authorized()
   @Mutation(returns => PlaceList)
   async addPlaceList(
