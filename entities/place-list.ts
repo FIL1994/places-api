@@ -13,7 +13,7 @@ import { User } from "./user";
 @ObjectType()
 export class PlaceList {
   @Field(type => ID)
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn("uuid")
   readonly id: number;
 
   @Field(type => User)
@@ -25,6 +25,10 @@ export class PlaceList {
   title: string;
 
   @Field(type => [Place])
-  @OneToMany(type => Place, place => place.placeList, { cascade: ["insert"] })
+  @OneToMany(
+    type => Place,
+    place => place.placeList,
+    { cascade: ["insert"] }
+  )
   places: Place[];
 }

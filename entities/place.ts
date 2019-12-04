@@ -6,7 +6,7 @@ import { PlaceList } from "./place-list";
 @ObjectType()
 export class Place {
   @Field(type => ID)
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn("uuid")
   readonly id: number;
 
   @Field()
