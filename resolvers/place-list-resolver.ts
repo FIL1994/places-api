@@ -1,4 +1,12 @@
-import { Resolver, Query, Arg, Int, Mutation, Ctx } from "type-graphql";
+import {
+  Resolver,
+  Query,
+  Arg,
+  Int,
+  Mutation,
+  Ctx,
+  Authorized
+} from "type-graphql";
 import { InjectRepository } from "typeorm-typedi-extensions";
 import { Repository } from "typeorm";
 import { PlaceList } from "../entities/place-list";
@@ -19,6 +27,7 @@ export class PlaceListResolver {
     return this.placeListRepository.findOne(placeListId);
   }
 
+  @Authorized()
   @Mutation(returns => PlaceList)
   async addPlaceList(
     @Arg("placeList") placeListInput: PlaceListInput,
@@ -31,6 +40,7 @@ export class PlaceListResolver {
       user: userFromDb,
       places: []
     });
+
     return await this.placeListRepository.save(placeList);
   }
 }
