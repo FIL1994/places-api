@@ -1,4 +1,4 @@
-import { Resolver, Query, Arg, Int, Mutation, ID } from "type-graphql";
+import { Resolver, Query, Arg, Mutation, ID } from "type-graphql";
 import { InjectRepository } from "typeorm-typedi-extensions";
 import { Repository } from "typeorm";
 import { Place } from "../entities/place";
@@ -11,12 +11,12 @@ export class PlaceResolver {
   constructor(
     @InjectRepository(Place)
     private readonly placeRepository: Repository<Place>,
-    @InjectRepository(Place)
+    @InjectRepository(PlaceList)
     private readonly placeListRepository: Repository<PlaceList>
   ) {}
 
   @Query(returns => Place, { nullable: true })
-  place(@Arg("placeId", type => Int) placeId: number) {
+  place(@Arg("placeId", type => ID) placeId: number) {
     return this.placeRepository.findOne(placeId);
   }
 
@@ -28,9 +28,11 @@ export class PlaceResolver {
   @Mutation(returns => Place) async addPlace(
     @Arg("place") placeInput: PlaceInput
   ) {
-    const placeList = await this.placeListRepository.findOneOrFail(
-      placeInput.placeListId
-    );
+    const placeList = await this.placeListRepository.findOneOrFail({
+      where: {
+        id: placeInput.placeListId
+      }
+    });
 
     const place = this.placeRepository.create({
       ...placeInput,
@@ -40,7 +42,7 @@ export class PlaceResolver {
   }
 
   @Mutation(returns => Place) async updatePlace(
-    @Arg("placeId", type => Int) placeId: number,
+    @Arg("placeId", type => ID) placeId: number,
     @Arg("placeInput") placeInput: PlaceInput
   ) {
     return await this.placeRepository.update(placeId, placeInput);

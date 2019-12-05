@@ -7,7 +7,7 @@ import { PlaceList } from "./place-list";
 export class Place {
   @Field(type => ID)
   @PrimaryGeneratedColumn("uuid")
-  readonly id: number;
+  readonly id: string;
 
   @Field()
   @Column()
@@ -41,6 +41,8 @@ export class Place {
   })
   imageUrls?: string[];
 
-  @ManyToOne(type => PlaceList)
+  @ManyToOne(type => PlaceList, {
+    nullable: false
+  })
   placeList: PlaceList;
 }

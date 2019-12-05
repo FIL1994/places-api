@@ -2,10 +2,10 @@ import {
   Resolver,
   Query,
   Arg,
-  Int,
   Mutation,
   Ctx,
-  Authorized
+  Authorized,
+  ID
 } from "type-graphql";
 import { InjectRepository } from "typeorm-typedi-extensions";
 import { Repository } from "typeorm";
@@ -23,8 +23,11 @@ export class PlaceListResolver {
   ) {}
 
   @Query(returns => PlaceList, { nullable: true })
-  placeList(@Arg("placeListId", type => Int) placeListId: number) {
-    return this.placeListRepository.findOne(placeListId);
+  async placeList(@Arg("placeListId", type => ID) placeListId: number) {
+    const placeList = await this.placeListRepository.findOne(placeListId);
+
+    console.log("placeList", placeList);
+    return placeList;
   }
 
   @Query(returns => [PlaceList], { nullable: true })

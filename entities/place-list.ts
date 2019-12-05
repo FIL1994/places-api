@@ -14,7 +14,7 @@ import { User } from "./user";
 export class PlaceList {
   @Field(type => ID)
   @PrimaryGeneratedColumn("uuid")
-  readonly id: number;
+  readonly id: string;
 
   @Field(type => User)
   @ManyToOne(type => User)
@@ -28,7 +28,7 @@ export class PlaceList {
   @OneToMany(
     type => Place,
     place => place.placeList,
-    { cascade: ["insert"] }
+    { cascade: ["insert"], eager: true }
   )
   places: Place[];
 }

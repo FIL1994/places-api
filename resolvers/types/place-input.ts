@@ -25,5 +25,5 @@ export class PlaceInput implements Partial<Place> {
   imageUrls?: string[];
 
   @Field(type => ID)
-  placeListId: number;
+  placeListId: string;
 }

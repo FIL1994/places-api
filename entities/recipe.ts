@@ -1,5 +1,11 @@
 import { Field, ID, ObjectType } from "type-graphql";
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToOne } from "typeorm";
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  OneToMany,
+  ManyToOne
+} from "typeorm";
 
 import { Rate } from "./rate";
 import { User } from "./user";
@@ -21,12 +27,16 @@ export class Recipe {
   description?: string;
 
   @Field(type => [Rate])
-  @OneToMany(type => Rate, rate => rate.recipe, { cascade: ["insert"] })
+  @OneToMany(
+    type => Rate,
+    rate => rate.recipe,
+    { cascade: ["insert"] }
+  )
   ratings: Rate[];
 
   @Field(type => User)
   @ManyToOne(type => User)
   author: User;
   @RelationColumn()
-  authorId: number;
+  authorId: string;
 }
