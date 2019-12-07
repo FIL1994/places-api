@@ -1,4 +1,7 @@
 # places-api
+GraphQL API for https://github.com/FIL1994/places-client
+
+## Setup
 
 generate jwt secret
 
