@@ -9,6 +9,7 @@ import {
 } from "type-graphql";
 import { InjectRepository } from "typeorm-typedi-extensions";
 import { Repository } from "typeorm";
+import { ApolloError } from "apollo-server";
 import { PlaceList } from "../entities/place-list";
 import { PlaceListInput } from "./types/place-list-input";
 import { Context } from "..";
@@ -40,6 +41,9 @@ export class PlaceListResolver {
     @Arg("placeList") placeListInput: PlaceListInput,
     @Ctx() { user }: Context
   ): Promise<PlaceList> {
+    if (placeListInput.title.trim().length === 0)
+      throw new ApolloError("Title cannot be empty");
+
     const userFromDb = await this.userRepository.findOneOrFail(user.id);
 
     const placeList = this.placeListRepository.create({
