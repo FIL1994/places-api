@@ -1,4 +1,10 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from "typeorm";
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+  getConnection
+} from "typeorm";
 import { ObjectType, Field, ID } from "type-graphql";
 import { PlaceList } from "./place-list";
 
@@ -42,7 +48,22 @@ export class Place {
   imageUrls?: string[];
 
   @ManyToOne(type => PlaceList, {
-    nullable: false
+    nullable: false,
+    lazy: true
   })
-  placeList: PlaceList;
+  placeList: Promise<PlaceList>;
+
+  async getUserId(): Promise<string> {
+    const placeList = await this.placeList;
+
+    const user: { userId: string } = await getConnection()
+      .createQueryBuilder()
+      .from(PlaceList, "place_list")
+      .select("user.id", "userId")
+      .leftJoin("place_list.user", "user")
+      .where("place_list.id = :id", { id: placeList.id })
+      .getRawOne();
+
+    return user.userId;
+  }
 }
