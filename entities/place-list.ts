@@ -17,7 +17,7 @@ export class PlaceList {
   readonly id: string;
 
   @Field(type => User)
-  @ManyToOne(type => User)
+  @ManyToOne(type => User, { eager: true })
   user: User;
 
   @Field()

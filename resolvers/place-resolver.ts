@@ -1,10 +1,20 @@
-import { Resolver, Query, Arg, Mutation, ID } from "type-graphql";
+import {
+  Resolver,
+  Query,
+  Arg,
+  Mutation,
+  ID,
+  Authorized,
+  Ctx
+} from "type-graphql";
 import { InjectRepository } from "typeorm-typedi-extensions";
 import { Repository } from "typeorm";
 import { Place } from "../entities/place";
 
 import { PlaceInput } from "./types/place-input";
 import { PlaceList } from "../entities/place-list";
+import { Context } from "..";
+import { AuthenticationError } from "apollo-server";
 
 @Resolver(of => Place)
 export class PlaceResolver {
@@ -15,8 +25,30 @@ export class PlaceResolver {
     private readonly placeListRepository: Repository<PlaceList>
   ) {}
 
+  private async findPlace(placeId: string) {
+    return await this.placeRepository.findOne(placeId);
+  }
+
+  private checkUserOwnPlaceList(placeList: PlaceList, userId: string) {
+    if (placeList.user.id !== userId) {
+      throw new AuthenticationError(
+        "User is not authorized to modify that place list"
+      );
+    }
+  }
+
+  private async checkUserOwnsPlace(place: Place, userId: string) {
+    const placeUserId = await place.getUserId();
+
+    if (placeUserId !== userId) {
+      throw new AuthenticationError(
+        "User is not authorized to modify that place list"
+      );
+    }
+  }
+
   @Query(returns => Place, { nullable: true })
-  place(@Arg("placeId", type => ID) placeId: number) {
+  place(@Arg("placeId", type => ID) placeId: string) {
     return this.placeRepository.findOne(placeId);
   }
 
@@ -25,33 +57,47 @@ export class PlaceResolver {
     return await this.placeRepository.find();
   }
 
-  @Mutation(returns => Place) async addPlace(
-    @Arg("place") placeInput: PlaceInput
+  @Authorized()
+  @Mutation(returns => Place)
+  async addPlace(
+    @Arg("place") placeInput: PlaceInput,
+    @Ctx() { user }: Context
   ) {
     const placeList = await this.placeListRepository.findOneOrFail({
       where: {
         id: placeInput.placeListId
       }
     });
+    this.checkUserOwnPlaceList(placeList, user.id);
 
     const place = this.placeRepository.create({
       ...placeInput,
-      placeList
+      placeList: Promise.resolve(placeList)
     });
     return await this.placeRepository.save(place);
   }
 
-  @Mutation(returns => Place) async updatePlace(
-    @Arg("placeId", type => ID) placeId: number,
-    @Arg("placeInput") placeInput: PlaceInput
+  @Authorized()
+  @Mutation(returns => Place)
+  async updatePlace(
+    @Arg("placeId", type => ID) placeId: string,
+    @Arg("placeInput") placeInput: PlaceInput,
+    @Ctx() { user }: Context
   ) {
+    const place = await this.findPlace(placeId);
+    await this.checkUserOwnsPlace(place, user.id);
     return await this.placeRepository.update(placeId, placeInput);
   }
 
-  @Mutation(returns => Boolean) async deletePlace(
-    @Arg("placeId", type => ID) placeId: number
+  @Authorized()
+  @Mutation(returns => Boolean)
+  async deletePlace(
+    @Arg("placeId", type => ID) placeId: string,
+    @Ctx() { user }: Context
   ) {
-    const place = await this.placeRepository.findOne(placeId);
+    const place = await this.findPlace(placeId);
+    await this.checkUserOwnsPlace(place, user.id);
+
     await this.placeRepository.remove(place);
     return true;
   }
