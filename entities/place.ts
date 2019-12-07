@@ -1,12 +1,13 @@
-import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from "typeorm";
 import { ObjectType, Field, ID } from "type-graphql";
+import { PlaceList } from "./place-list";
 
 @Entity()
 @ObjectType()
 export class Place {
   @Field(type => ID)
-  @PrimaryGeneratedColumn()
-  readonly id: number;
+  @PrimaryGeneratedColumn("uuid")
+  readonly id: string;
 
   @Field()
   @Column()
@@ -39,4 +40,9 @@ export class Place {
     nullable: true
   })
   imageUrls?: string[];
+
+  @ManyToOne(type => PlaceList, {
+    nullable: false
+  })
+  placeList: PlaceList;
 }

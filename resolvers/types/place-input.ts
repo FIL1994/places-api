@@ -1,4 +1,4 @@
-import { InputType, Field } from "type-graphql";
+import { InputType, Field, ID } from "type-graphql";
 import { Place } from "../../entities/place";
 
 @InputType()
@@ -23,4 +23,7 @@ export class PlaceInput implements Partial<Place> {
     defaultValue: []
   })
   imageUrls?: string[];
+
+  @Field(type => ID)
+  placeListId: string;
 }
