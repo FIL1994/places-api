@@ -42,10 +42,8 @@ export class Place {
   @Field(type => [String], {
     nullable: true
   })
-  @Column("simple-array", {
-    nullable: true
-  })
-  imageUrls?: string[];
+  @Column()
+  imageUrl?: string;
 
   @ManyToOne(type => PlaceList, {
     nullable: false,

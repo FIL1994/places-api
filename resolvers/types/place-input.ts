@@ -22,7 +22,7 @@ export class PlaceInput implements Partial<Place> {
     nullable: true,
     defaultValue: []
   })
-  imageUrls?: string[];
+  imageUrl?: string;
 
   @Field(type => ID)
   placeListId: string;
