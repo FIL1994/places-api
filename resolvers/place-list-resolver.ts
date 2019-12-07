@@ -25,16 +25,13 @@ export class PlaceListResolver {
   @Query(returns => PlaceList, { nullable: true })
   async placeList(@Arg("placeListId", type => ID) placeListId: number) {
     const placeList = await this.placeListRepository.findOne(placeListId);
-
-    console.log("placeList", placeList);
     return placeList;
   }
 
   @Query(returns => [PlaceList], { nullable: true })
   async placeLists() {
-    return await this.placeListRepository.find({
-      loadRelationIds: true
-    });
+    const placeLists = await this.placeListRepository.find();
+    return placeLists;
   }
 
   @Authorized()
