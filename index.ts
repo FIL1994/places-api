@@ -6,10 +6,6 @@ import * as TypeORM from "typeorm";
 import * as TypeGraphQL from "type-graphql";
 
 import { authChecker } from "./authorization/auth-checker";
-import { RecipeResolver } from "./resolvers/recipe-resolver";
-import { RateResolver } from "./resolvers/rate-resolver";
-import { Recipe } from "./entities/recipe";
-import { Rate } from "./entities/rate";
 import { User } from "./entities/user";
 import { Place } from "./entities/place";
 import { PlaceResolver } from "./resolvers/place-resolver";
@@ -35,7 +31,7 @@ async function bootstrap() {
       password: "pass123",
       port: 5432,
       host: "localhost",
-      entities: [Recipe, Rate, User, Place, PlaceList],
+      entities: [User, Place, PlaceList],
       synchronize: process.env.NODE_ENV === "production" ? false : true,
       logger: "advanced-console",
       logging: "all",
@@ -45,13 +41,7 @@ async function bootstrap() {
 
     // build TypeGraphQL executable schema
     const schema = await TypeGraphQL.buildSchema({
-      resolvers: [
-        RecipeResolver,
-        RateResolver,
-        PlaceResolver,
-        UserResolver,
-        PlaceListResolver
-      ],
+      resolvers: [PlaceResolver, UserResolver, PlaceListResolver],
       container: Container,
       authChecker
     });
