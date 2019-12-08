@@ -39,7 +39,7 @@ export class Place {
   @Column({ nullable: true })
   description?: string;
 
-  @Field(type => [String], {
+  @Field(type => String, {
     nullable: true
   })
   @Column()

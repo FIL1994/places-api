@@ -71,9 +71,11 @@ export class PlaceResolver {
     this.checkUserOwnPlaceList(placeList, user.id);
 
     const place = this.placeRepository.create({
-      ...placeInput,
-      placeList: Promise.resolve(placeList)
+      ...placeInput
     });
+
+    place.placeList = Promise.resolve(placeList);
+
     return await this.placeRepository.save(place);
   }
 

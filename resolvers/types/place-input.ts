@@ -18,9 +18,8 @@ export class PlaceInput implements Partial<Place> {
   @Field({ nullable: true })
   description?: string;
 
-  @Field(type => [String], {
-    nullable: true,
-    defaultValue: []
+  @Field(type => String, {
+    nullable: true
   })
   imageUrl?: string;
 
