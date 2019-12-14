@@ -31,4 +31,9 @@ export class PlaceList {
     { cascade: ["insert"], eager: true }
   )
   places: Place[];
+
+  @Field(type => String)
+  get imageUrl(): string {
+    return this.places[0].imageUrl;
+  }
 }
