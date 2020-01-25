@@ -80,10 +80,10 @@ export class PlaceResolver {
     try {
       const res = await googleMapsClient
         .place({
-          place_id: place.googleId,
+          placeid: place.googleId,
           fields: ["photo"],
           language: "en"
-        } as any)
+        })
         .asPromise();
 
       const photoReference = res.json.result.photos[0].photo_reference;
