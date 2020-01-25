@@ -39,6 +39,14 @@ export class Place {
   @Column({ nullable: true })
   description?: string;
 
+  @Field()
+  @Column()
+  googleId: string;
+
+  @Field()
+  @Column()
+  photoReference: string;
+
   @Field(type => String, {
     nullable: true
   })

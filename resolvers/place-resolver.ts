@@ -15,6 +15,7 @@ import { PlaceInput } from "./types/place-input";
 import { PlaceList } from "../entities/place-list";
 import { Context } from "..";
 import { AuthenticationError } from "apollo-server";
+import { googleMapsClient } from "../helpers";
 
 @Resolver(of => Place)
 export class PlaceResolver {
@@ -75,6 +76,21 @@ export class PlaceResolver {
     });
 
     place.placeList = Promise.resolve(placeList);
+
+    try {
+      const res = await googleMapsClient
+        .place({
+          placeid: place.googleId,
+          fields: ["photo"],
+          language: "en"
+        })
+        .asPromise();
+
+      const photoReference = res.json.result.photos[0].photo_reference;
+      place.photoReference = photoReference;
+    } catch (e) {
+      throw new Error(e);
+    }
 
     return await this.placeRepository.save(place);
   }

@@ -25,4 +25,7 @@ export class PlaceInput implements Partial<Place> {
 
   @Field(type => ID)
   placeListId: string;
+
+  @Field()
+  googleId: string;
 }

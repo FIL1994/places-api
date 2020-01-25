@@ -11,6 +11,7 @@
   "author": "Philip Van Raalte",
   "license": "ISC",
   "dependencies": {
+    "@google/maps": "^1.1.0",
     "@types/bcryptjs": "^2.4.2",
     "@types/graphql": "^14.5.0",
     "@types/jsonwebtoken": "^8.3.6",
@@ -21,6 +22,7 @@
     "graphql": "^14.5.8",
     "jsonwebtoken": "^8.5.1",
     "pg": "^7.17.1",
+    "q": "^1.5.1",
     "reflect-metadata": "^0.1.13",
     "ts-node": "^8.6.2",
     "ts-node-dev": "^1.0.0-pre.43",
@@ -31,6 +33,7 @@
     "typescript": "^3.7.5"
   },
   "devDependencies": {
-    "@types/axios": "^0.14.0"
+    "@types/axios": "^0.14.0",
+    "@types/google__maps": "^0.5.11"
   }
 }
